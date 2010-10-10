@@ -1590,13 +1590,11 @@ longer has to worry about quoting each value before sending it to the server.
 
 =end original
 
-Using prepared statements is in theory quite a bit faster: not only does the
-PostgreSQL backend only have to prepare the query only once, but DBD::Pg no
-longer has to worry about quoting each value before sending it to the server.
-
 プリペアド文を使うのは PostgreSQL バックエンドに対してクエリをただ一度送るだけで済むので、
 かなり速くなる、というのが理由ですが、それだけではなく、サーバにクエリを送る前に
 DBD::Pg 側でそれぞれの値をクォートするという面倒を見なくて済むという理由もあります。
+
+(訳注: XXX)
 
 =begin original
 
@@ -1614,7 +1612,7 @@ list, L<http://archives.postgresql.org/pgsql-performance/>
 
 しかしながら、ここにはいくつかの欠点もあります。
 サーバは実際のパラメータの値をあらかじめ知ることができないので、
-常に理想的な解析計画を選択できるわけではありません。
+常に理想的な実行計画を選択できるわけではありません。
 しかし、あなたが同類の問い合わせを何度も実行している、といった状況のほとんどにおいて、
 デフォルトの計画でうまくいくでしょう。
 PgBouncer のような低レベルでコネクションをキャッシュするプログラムでは
@@ -1625,7 +1623,7 @@ DBD::Pg 経由で準備された文を使わないようにするか、あるいは
 pgsql-performance メーリングリスト L<http://archives.postgresql.org/pgsql-performance/>
 をご覧ください。
 
-(訳注: parse plan:解析計画？ cache ? caches ?)
+(訳注: parse plan:解析計画？ 実行計画とした。)
 
 =begin original
 
@@ -1670,8 +1668,12 @@ The actual C<PREPARE> is usually not performed until the first execute is called
 to the fact that information on the data types (provided by L</bind_param>) may
 be provided after the prepare but before the execute.
 
-実際の C<PREPARE> 文は、
+実際の C<PREPARE> 文は普通、
 最初の execute が呼ばれるまで実行されません。
+これは、データ型についての情報が execute をするときまでに( L</bind_param> によって)
+与えられるというのが理由です。
+
+(訳注: XXX)
 
 =begin original
 
@@ -1688,9 +1690,9 @@ statements by setting the L</pg_prepare_now> attribute on the database handle:
 サーバが、サーバサイドのプリペアド文を扱えて、かつ、文の中にプレースホルダが無い場合を除き、
 実際の C<PREPARE> 文は最初の L</execute> の呼び出しの前に発行されます。
 また、C<prepare> メソッドの呼び出しの際に L</pg_prepare_now>
-属性が真の値とともに渡された場合も実際の C<PREPARE> 文がすぐに発行されます。
-逆に、(こういうことをしたくなるケースは非常にまれだと思いますが)L</pg_prepare_now>
-属性に偽の値をセットして渡すと、ただちに C<PREPARE> を発行B<させない>ようになります。
+属性が真の値とともに渡された場合も、実際の C<PREPARE> 文がすぐに発行されます。
+逆に、(こういうことをしたくなるケースは非常にまれだと思いますが) L</pg_prepare_now>
+属性に偽の値をセットして渡すと、ただちに C<PREPARE> を発行B<しない>ようになります。
 最後に、全ての prepare メソッドのデフォルトの振る舞いを変更するために、
 データベースハンドルの L</pg_prepare_now> 属性を変更することができます:
 
@@ -1734,7 +1736,7 @@ number of placeholders as your prepared statement. Example:
 あなた自身が PREPARE 文を使いたくなることがあるかも知れません。
 それをするには、単純に C<PREPARE> 文を(L</do> メソッドなどを使って)直接サーバに送り、
 ステートメントハンドルを作成し、L</pg_prepare_name> 属性にプリペアド文の名前をセットしてください。
-ステートメントハンドルはダミーの SQL 文を与えることで作成できますが、あなたが準備したいSQL文と
+ステートメントハンドルはダミーの SQL 文を与えることで作成できますが、あなたが準備したい SQL 文と
 同数のプレースホルダを含んでいなければなりません。
 例を示します:
 
@@ -2347,10 +2349,8 @@ PID、そして通知パラメータです。このメソッドは、
 の使用に先立って commit する必要があるかもしれません。新しく到着した通知は、
 トランザクションの途中で拾い上げられることはありません。例:
 
-(訳注:
-原文の event name は「条件通知名」、payload string は「通知パラメータ」とした。
-pgsql-doc-ja 「30.7. 非同期通知」より。
-)
+(訳注: 原文の event name は「条件通知名」、payload string は「通知パラメータ」とした。
+pgsql-doc-ja 「30.7. 非同期通知」より。)
 
 =begin original
 
@@ -3076,11 +3076,11 @@ every begin. For more details, please see:
 このモードでは、データベースへの変更は許されず、エラーになります。
 この方法は L<AutoCommit> が真のときはB<動きません>。読み取り専用の効果は、
 begin が行われたあとに S<SET TRANSACTION READ ONLY> を送ることで成し遂げられます。
-より詳細の情報については、以下を見てください:
+より詳細な情報については、以下を見てください:
 
 http://www.postgresql.org/docs/current/interactive/sql-set-transaction.html
 
-=begin original 
+=begin original
 
 Please not that this method is not foolproof: there are still ways to update the 
 database. Consider this a safety net to catch applications that should not be 
@@ -3094,6 +3094,8 @@ This method method requires DBI version 1.55 or better.
 変更する方法が残されています。この属性は INSERT, UPDATE, DELETE
 を発行するべきでないときのセーフティネットだと考えてください。
 
+(訳注: 原文の Please not は Please note の typo)
+
 =head3 B<pg_server_prepare> (integer)
 
 =begin original
@@ -3105,7 +3107,7 @@ be used whenever possible. See the section on the L</prepare> method for more in
 =end original
 
 DBD::Pg 特有の属性です。DBD::Pg がサーバサイドのプリペアド文を使おうとするかどうかを
-指定します。デフォルトは 1 で、可能な場合は常にプリペアド文を使用します。しょうさいについては、
+指定します。デフォルトは 1 で、可能な場合は常にプリペアド文を使用します。詳細については、
 L</prepare> のセクションをご覧ください。
 
 =head3 B<pg_placeholder_dollaronly> (boolean)
@@ -3118,26 +3120,56 @@ Useful for statements that contain unquoted question marks, such as geometric op
 
 =end original
 
-DBD::Pg 特有の属性です。デフォルトは偽です。真のとき、SQL 文中のクエスチョンマーク、kjjk
+DBD::Pg 特有の属性です。デフォルトは偽です。真のとき、SQL 文中のクエスチョンマークは
+L<placeholders|/Placeholders> とはみなされません。
+幾何データ演算子のようなクエスチョンマークを中に含む　SQL 文を使うときに便利です。
 
+(訳注: この属性が真のときには ":foo" という形式の "named parameters" で使われるコロンもまた、
+プレースホルダの開始文字とはみなされなくなります。)
 
 =head3 B<pg_enable_utf8> (boolean)
+
+=begin original
 
 DBD::Pg specific attribute. If true, then the C<utf8> flag will be turned on
 for returned character data (if the data is valid UTF-8). For details about
 the C<utf8> flag, see the C<Encode> module. This attribute is only relevant under
 perl 5.8 and later.
 
+=end original
+
+DBD::Pg 特有の属性です。真の場合、返された文字データの C<utf8> フラグが on になります。(UTF-8
+として正しいデータの場合) C<utf8> フラグの詳細については C<Encode>
+モジュールを見てください。この属性は Perl 5.8 かそれ以降のみに関係します。
+
 =head3 B<pg_errorlevel> (integer)
+
+=begin original
 
 DBD::Pg specific attribute. Sets the amount of information returned by the server's 
 error messages. Valid entries are 0, 1, and 2. Any other number will be forced to the 
 default value of 1.
 
+=end original
+
+DBD::Pg 特有の属性です。どれだけの量の情報がサーバのエラーメッセージとして返されるかを設定します。
+0, 1, そして 2 が設定でき、それ以外の数値を設定するとデフォルトの値 1 に強制されます。
+
+=begin original
+
 A value of 0 ("TERSE") will show severity, primary text, and position only
 and will usually fit on a single line. A value of 1 ("DEFAULT") will also
 show any detail, hint, or context fields. A value of 2 ("VERBOSE") will
 show all available information.
+
+=end original
+
+値 0 ("TERSE") ("簡潔") は、飾りのない、主要なテキスト、ポジションだけを表示し、
+たいてい一行に収まります。
+値 1 ("DEFAULT") ("デフォルト") は、詳細、ヒント、文脈も表示します。
+値 2 ("VERBOSE") ("饒舌") は、全ての情報を表示します。
+
+(訳注: XXX)
 
 =head3 B<pg_lib_version> (integer, read-only)
 
