@@ -1,5 +1,5 @@
 
-=encoding utf8
+=encoding euc-jp
 
 =head1 NAME
 
@@ -2781,6 +2781,8 @@ L</primary_key_info> メソッドへのシンプルなインタフェースで�
   $sth = $dbh->foreign_key_info( $pk_catalog, $pk_schema, $pk_table,
                                  $fk_catalog, $fk_schema, $fk_table );
 
+=begin original
+
 Supported by this driver as proposed by DBI, using the SQL/CLI variant.
 There are no search patterns allowed, but leaving the C<$schema> argument
 blank will cause the first table found in the schema search path to be
@@ -2789,9 +2791,20 @@ to show the data type for the unique and foreign key columns. Foreign
 keys that have no named constraint (where the referenced column only has
 an unique index) will return C<undef> for the "UK_NAME" field.
 
+=end original
+
+DBI の提案によりこのドライバでサポートされています。SQL/CLI variant を使っています。
+サーチパターンは許されていませんが、C<$schema> 引数を空にしておくと
+スキーマサーチパスを使って最初に見つかったテーブルが使われます。
+2つのフィールド "UK_DATA_TYPE" と "FK_DATA_TYPE"
+が一意性制約と外部キー制約のデータ型を示すために追加で返されます。
+名前のない外部キー制約には "UK_NAME" フィールドに C<undef> が返されます。
+
 =head3 B<statistics_info>
 
   $sth = $dbh->statistics_info( undef, $schema, $table, $unique_only, $quick );
+
+=begin original
 
 Returns a statement handle that can be fetched from to give statistics information 
 on a specific table and its indexes. The C<$table> argument is mandatory. The 
@@ -2799,6 +2812,14 @@ C<$schema> argument is optional but recommended. The C<$unique_only> argument, i
 causes only information about unique indexes to be returned. The C<$quick> argument is 
 not used by DBD::Pg. For information on the format of the rows returned, please see the DBI 
 documentation.
+
+=end original
+
+指定されたテーブルとそのインデックスの情報を読み取ることができるステートメントハンドルを返します。
+C<$table> 引数は必須です。C<$schema> 引数は省略可能ですが省略しないことが推奨されます。
+C<$unique_only> 引数が真の場合、UNIQUE なインデックスのみが返されます。
+C<$quick> 引数は DBD::Pg では使用されません。
+返される行の形式についての情報は、DBI のドキュメントをご覧ください。
 
 =for html <a href="http://search.cpan.org/~timb/DBI/DBI.pm#statistics_info">DBI section on statistics_info</a>
 
