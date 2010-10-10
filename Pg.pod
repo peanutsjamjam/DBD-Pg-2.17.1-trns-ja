@@ -2998,19 +2998,36 @@ by internal use of the L</fetchrow_arrayref> method.
   $hash_ref = $dbh->selectrow_hashref($sql, \%attr);
   $hash_ref = $dbh->selectrow_hashref($sql, \%attr, @bind_values);
 
+=begin original
+
 Exactly the same as L</selectrow_array>, except that it returns a reference to an hash,
 by internal use of the L</fetchrow_hashref> method.
+
+=end original
+
+ハッシュのリファレンスを返すということを除いては L</selectrow_array> とまったく同じです。
+内部的に L</fetchrow_hashref> メソッドを使用しています。
 
 =head3 B<clone>
 
   $other_dbh = $dbh->clone();
 
+=begin original
+
 Creates a copy of the database handle by connecting with the same parameters as the original 
 handle, then trying to merge the attributes. See the DBI documentation for complete usage.
+
+=end original
+
+オリジナルのハンドルと同じパラメータを用いて接続し、属性をマージした、
+データベースハンドルのコピーを返します。
+完全な使い方については DBI ドキュメントをご覧ください。
 
 =head2 Database Handle Attributes
 
 =head3 B<AutoCommit> (boolean)
+
+=begin original
 
 Supported by DBD::Pg as proposed by DBI. According to the classification of
 DBI, PostgreSQL is a database in which a transaction must be explicitly
@@ -3020,14 +3037,32 @@ in the future, so it is highly recommended that you explicitly set it when
 calling L</connect>. For details see the notes about L</Transactions>
 elsewhere in this document.
 
+=end original
+
+DBI の提案によりこのドライバでサポートされています。DBI の分類によると、PostgreSQL
+はトランザクションを明示的に開始しなければならないデータベースです。
+トランザクションの開始をせずにデータベースに対して変更を行うと、その変更は直ちに永続化します。
+デフォルトで AutoCommit が on というこの設計は、将来には変更するかもしれませんので、
+L</connect> を呼ぶ際には明示的にこの値をセットすることを強く推奨します。
+詳細ついてはこのドキュメントの L</Transactions> にあります。
+
 =head3 B<pg_bool_tf> (boolean)
+
+=begin original
 
 DBD::Pg specific attribute. If true, boolean values will be returned
 as the characters 't' and 'f' instead of '1' and '0'.
 
+=end original
+
+DBD::Pg 特有の属性です。真の場合、論理値データ型が
+"1" と "0" の代わりに "t" と "f" で返されます。
+
 =head3 B<ReadOnly> (boolean)
 
-$dbh->{ReadOnly} = 1;
+  $dbh->{ReadOnly} = 1;
+
+=begin original
 
 Specifies if the current database connection should be in read-only mode or not. 
 In this mode, changes that change the database are not allowed and will throw 
@@ -3035,7 +3070,17 @@ an error. Note: this method will B<not> work if L</AutoCommit> is true. The
 read-only effect is accomplished by sending a S<SET TRANSACTION READ ONLY> after 
 every begin. For more details, please see:
 
+=end original
+
+現在のデータベースへの接続を、読み取り専用モードにするかどうかを指定します。
+このモードでは、データベースへの変更は許されず、エラーになります。
+この方法は L<AutoCommit> が真のときはB<動きません>。読み取り専用の効果は、
+begin が行われたあとに S<SET TRANSACTION READ ONLY> を送ることで成し遂げられます。
+より詳細の情報については、以下を見てください:
+
 http://www.postgresql.org/docs/current/interactive/sql-set-transaction.html
+
+=begin original 
 
 Please not that this method is not foolproof: there are still ways to update the 
 database. Consider this a safety net to catch applications that should not be 
@@ -3043,17 +3088,38 @@ issuing commands such as INSERT, UPDATE, or DELETE.
 
 This method method requires DBI version 1.55 or better.
 
+=end original
+
+この属性は foolproof ではないことに注意してください: この属性を真にしても、データベースを
+変更する方法が残されています。この属性は INSERT, UPDATE, DELETE
+を発行するべきでないときのセーフティネットだと考えてください。
+
 =head3 B<pg_server_prepare> (integer)
+
+=begin original
 
 DBD::Pg specific attribute. Indicates if DBD::Pg should attempt to use server-side 
 prepared statements. The default value, 1, indicates that prepared statements should 
 be used whenever possible. See the section on the L</prepare> method for more information.
 
+=end original
+
+DBD::Pg 特有の属性です。DBD::Pg がサーバサイドのプリペアド文を使おうとするかどうかを
+指定します。デフォルトは 1 で、可能な場合は常にプリペアド文を使用します。しょうさいについては、
+L</prepare> のセクションをご覧ください。
+
 =head3 B<pg_placeholder_dollaronly> (boolean)
+
+=begin original
 
 DBD::Pg specific attribute. Defaults to false. When true, question marks inside of statements 
 are not treated as L<placeholders|/Placeholders>.
 Useful for statements that contain unquoted question marks, such as geometric operators.
+
+=end original
+
+DBD::Pg 特有の属性です。デフォルトは偽です。真のとき、SQL 文中のクエスチョンマーク、kjjk
+
 
 =head3 B<pg_enable_utf8> (boolean)
 
@@ -3922,6 +3988,8 @@ of version 8.0 or greater) The basic usage is as follows:
 
 =head3 Asynchronous Constants
 
+(非同期関連の定数)
+
 There are currently three asynchronous constants exported by DBD::Pg.
 You can import all of them by putting either of these at the top of your script:
 
@@ -3971,6 +4039,8 @@ rollbacks are not done automatically.
 
 =item B<pg_ready>
 
+=begin original
+
 This method can be called as a database handle method or (for convenience) as a
 statement handle method. Both simply see if a previously issued asynchronous query
 has completed yet. It returns true if the statement has finished, in which case you
@@ -3979,12 +4049,15 @@ when you have other things to do while the query is running.
 If you simply want to wait until the query is done, do not call pg_ready()
 over and over, but simply call the pg_result() method.
 
-このメソッドはデータベースハンドルに対しても、ステートメントハンドルに対しても呼ぶことができます。
+=end original
+
+このメソッドはデータベースハンドルメソッドとしても、
+(簡便のため) ステートメントハンドルメソッドとしても呼ぶことができます。
 どちらも、以前に発行した非同期クエリがもう完了したかどうかを返します。
 クエリが完了していれば真を返します。(訳注: まだ完了していないときは偽を返します。)
 C<pg_ready> が真を返した時は、次に L</pg_result> を呼ぶべきです。C<pg_ready()>
 は、クエリが実行されている間に、あなたが何か他にやることがある場合にだけ呼ぶべきです。
-クエリが完了するのを単に待つ場合には、C<pg_ready()> を繰り返し呼ぶことはせず、単に
+クエリが完了するのを単に待ちたい時は、C<pg_ready()> を繰り返し呼ぶことはせず、単に
 C<pg_result()> メソッドを呼んでください。
 
   my $time = 0;
@@ -4189,12 +4262,9 @@ L<pg_expand_array|/pg_expand_array_(boolean)> 属性を偽に設定してください。
 
   $dbh->{pg_expand_array} = 0;
 
-(訳注:
-
-Perl の配列は添え字が 0 から始まりますが、Postgresでは 1 から始まることに注意が必要です。
-いずれにせよ、配列の最初の要素は、配列の最初の要素として扱われます。
-
-)
+(訳注: Perl の配列は添え字が 0 から始まりますが、Postgresでは 1
+から始まることに注意が必要です。いずれにせよ、配列の最初の要素は、
+配列の最初の要素として扱われます。)
 
 =head2 COPY support
 
