@@ -1,26 +1,6 @@
 
 =encoding euc-jp
 
-=head1 訳者メモ
-
-一つ目、ひとつめ、一つ目
-
-二つめ、ふたつめ、二つ目
-
-pgsql-doc-ja では、「1つ目」、「2つ目」で統一されているぽい。
-
-できます、出来ます
-
-トレース・フラグ
-
-トレース･フラグ
-
-有効、無効、on off
-
-バージョン、version
-
-可搬性、ポータビリティ
-
 =head1 NAME
 
 =begin original
@@ -653,8 +633,8 @@ to DBD::Pg (all those below which start with the letters 'pg').
 
 =end original
 
-DBI 特有のフラグ以外を、全て有効にします。
-言い換えると、DBD::Pg 特有のフラグ (以下に示している 'pg' で始まるもの全て) を有効にします。
+DBI 特有のフラグ以外を、全て有効にします。言い換えると、DBD::Pg
+特有のフラグ (以下に示している 'pg' で始まるもの全て) を有効にします。
 
 =item pglibpq
 
@@ -872,7 +852,7 @@ C<pg_INV_READ> でオープンしたオブジェクトには書き込むことはできません。
 ラージオブジェクトの内容を読むことになります。
 
 (訳注: 原文の C<lo_write> は明らかに C<lo_open> の間違い。
-see postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン)
+see. postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン)
 
 =begin original
 
@@ -2673,7 +2653,7 @@ B<pg_enum_values>: an array reference of allowed values for an enum column
 
 =end original
 
-B<pg_type>: 追加情報のデータ型、例えば "character varying(20)"
+B<pg_type>: データ型とその追加情報、例えば "character varying(20)"
 
 B<pg_constraint>: カラムの制約定義
 
@@ -2759,6 +2739,12 @@ involved:
 
 =end original
 
+プライマリキーのカラム見つかるごとに1つの行を返す標準の形式に加え、C<pg_onerow> 属性を
+渡すことで、プライマリキーが複数カラムに渡る場合であっても1つの行を返すように強制できます。
+プライマリキーが複数カラムに渡る場合、"KEY_SEQ", "COLUMN_NAME", "DATA_TYPE" の3つのフィールド
+は、カンマ区切りの文字列で返されます。もし C<pg_onerow> 属性に "2" が設定されていると、これらの
+フィールドは arrayref で返されます。複数カラムが含まれる場合は便利でしょう:
+
   $sth = $dbh->primary_key_info('', '', 'dbd_pg_test', {pg_onerow => 2});
   if (defined $sth) {
     my $pk = $sth->fetchall_arrayref()->[0];
@@ -2768,13 +2754,27 @@ involved:
     }
   }
 
+(訳注: C<pg_onerow> 属性に "0" を設定しても、"1"
+を設定している時と同様にカンマ区切りになる模様。
+複数のプライマリキー・カラムに対して、複数の行を得たい場合は、C<pg_onerow>
+自体を指定しないでおく必要がある)
+
 =head3 B<primary_key>
 
   @key_column_names = $dbh->primary_key(undef, $schema, $table);
 
+=begin original
+
 Simple interface to the L</primary_key_info> method. Returns a list of the column names that 
 comprise the primary key of the specified table. The list is in primary key column sequence 
 order. If there is no primary key then an empty list is returned.
+
+=end original
+
+L</primary_key_info> メソッドへのシンプルなインタフェースです。
+指定されたテーブルのプライマリキーを構成するカラム名をリストで返します。
+このリストは、プライマリキー指定時のカラムの記述順で返されます。
+プライマリキーがない場合は、空のリストが返されます。
 
 =head3 B<foreign_key_info>
 
@@ -4285,6 +4285,24 @@ This module (DBD::Pg) is free software; you can redistribute it and/or modify it
 under the same terms as Perl 5.10.0. For more details, see the full text of the 
 licenses in the directory LICENSES.
 
+=head1 訳者メモ
+
+一つ目、ひとつめ、一つ目
+
+二つめ、ふたつめ、二つ目
+
+pgsql-doc-ja では、「1つ目」、「2つ目」で統一されているぽい。
+
+できます、出来ます
+
+トレース・フラグ
+
+トレース･フラグ
+
+有効、無効、on off
+
+バージョン、version
+
+可搬性、ポータビリティ
 
 =cut
-
