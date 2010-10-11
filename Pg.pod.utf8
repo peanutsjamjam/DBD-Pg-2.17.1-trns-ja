@@ -91,7 +91,11 @@ consult the B<DBI> documentation first!
 
 =head1 THE DBI CLASS
 
+(DBI クラス)
+
 =head2 DBI Class Methods
+
+(DBI クラスのメソッド)
 
 =head3 B<connect>
 
@@ -366,6 +370,7 @@ to specify an alternate port and host:
   @data_sources = $dbh->data_sources('port=5824;host=example.com');
 
 =head2 Methods Common To All Handles
+
 (全てのハンドルに共通のメソッド)
 
 =begin original
@@ -1398,7 +1403,11 @@ DBD::Pg では使用されません。
 
 =head1 DBI DATABASE HANDLE OBJECTS
 
+(DBI データベースハンドルのオブジェクト)
+
 =head2 Database Handle Methods
+
+(DBI データベースハンドルのメソッド)
 
 =head3 B<selectall_arrayref>
 
@@ -3039,6 +3048,8 @@ handle, then trying to merge the attributes. See the DBI documentation for compl
 
 =head2 Database Handle Attributes
 
+(データベースハンドルの属性)
+
 =head3 B<AutoCommit> (boolean)
 
 =begin original
@@ -3454,7 +3465,11 @@ DBD::Pg では使用されません。
 
 =head1 DBI STATEMENT HANDLE OBJECTS
 
+(ステートメントハンドルのオブジェクト)
+
 =head2 Statement Handle Methods
+
+(ステートメントハンドルのメソッド)
 
 =head3 B<bind_param>
 
@@ -3905,6 +3920,8 @@ L<http://www.postgresql.org/docs/current/static/largeobjects.html>.
 
 =head2 Statement Handle Attributes
 
+(ステートメントハンドルの属性)
+
 =head3 B<NUM_OF_FIELDS> (integer, read-only)
 
 Returns the number of columns returned by the current statement.
@@ -4095,7 +4112,11 @@ Not used by DBD::Pg. See the note about L</Cursors> elsewhere in this document.
 
 =head1 FURTHER INFORMATION
 
+(さらなる情報)
+
 =head2 Transactions
+
+(トランザクション)
 
 Transaction behavior is controlled via the L</AutoCommit> attribute. For a
 complete definition of C<AutoCommit> please refer to the DBI documentation.
@@ -4109,6 +4130,8 @@ statement is not always enough to trigger the first C<BEGIN>, as the actual
 C<PREPARE> is usually postponed until the first call to L</execute>.
 
 =head2 Savepoints
+
+(セーブポイント)
 
 PostgreSQL version 8.0 introduced the concept of savepoints, which allows 
 transactions to be rolled back to a certain point without affecting the 
@@ -4140,6 +4163,8 @@ created after the one being released are also destroyed.
   $dbh->pg_release("mysavepoint");
 
 =head2 Asynchronous Queries
+
+(非同期クエリ)
 
 It is possible to send a query to the backend and have your script do other work while
 the query is running on the backend. Both queries sent by the L</do> method,
@@ -4423,6 +4448,8 @@ as you don't need it anymore.
 
 =head2 Array support
 
+(配列のサポート)
+
 =begin original
 
 DBD::Pg allows arrays (as arrayrefs) to be passed in to both 
@@ -4463,6 +4490,8 @@ L<pg_expand_array|/pg_expand_array_(boolean)> 属性を偽に設定してくだ�
 配列の最初の要素として扱われます。)
 
 =head2 COPY support
+
+(COPY のサポート)
 
 DBD::Pg allows for quick (bulk) reading and storing of data by using 
 the B<COPY> command. The basic process is to use C<< $dbh->do >> to issue a 
@@ -4545,11 +4574,15 @@ success. This method will fail if called when not in COPY IN mode.
 
 =head2 Large Objects
 
+(ラージオブジェクト)
+
 DBD::Pg supports all largeobject functions provided by libpq via the
 C<< $dbh->pg_lo* >> methods. Please note that access to a large object, even read-only 
 large objects, must be put into a transaction.
 
 =head2 Cursors
+
+(カーソル)
 
 Although PostgreSQL supports cursors, they have not been used in the current
 implementation. When DBD::Pg was created, cursors in PostgreSQL could only be
@@ -4579,6 +4612,8 @@ double loop, like this:
 
 =head2 Datatype bool
 
+(論理値データ型)
+
 The current implementation of PostgreSQL returns 't' for true and 'f' for false.
 From the Perl point of view, this is a rather unfortunate choice.
 DBD::Pg therefore translates the result for the C<BOOL> data type in a Perlish manner:
@@ -4592,6 +4627,8 @@ Boolean values can be passed to PostgreSQL as TRUE, 't', 'true', 'y', 'yes' or
 '1' for true and FALSE, 'f', 'false', 'n', 'no' or '0' for false.
 
 =head2 Schema support
+
+(スキーマのサポート)
 
 The PostgreSQL schema concept may differ from those of other databases. In a nutshell,
 a schema is a named collection of objects within a single database. Please refer to the
