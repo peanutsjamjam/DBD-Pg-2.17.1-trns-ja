@@ -532,6 +532,17 @@ flags that DBD::Pg uses, see L<parse_trace_flag|/parse_trace_flag and parse_trac
 複数のステートメントハンドルに異なる出力先を指定しておいて。
 とやってみると、最後に指定した出力先に全部書き出された)
 
+=begin original
+
+The value is either a numeric level or a named flag. For the 
+flags that DBD::Pg uses, see L<parse_trace_flag|/parse_trace_flag and parse_trace_flags>.
+
+=end original
+
+値は、レベルの数字とフラグ名のどちらでも指定できます。DBD::Pg
+が使用しているフラグについては L<parse_trace_flag|/parse_trace_flag and parse_trace_flags>
+を見てください。
+
 =head3 B<trace_msg>
 
   $h->trace_msg($message_text);
@@ -1038,13 +1049,9 @@ a database or a statement handle. Currently, all the hash values are undef.
 DBD::Pg によって使用される全てのプライベートな属性のハッシュを返します。
 いまのところ、全てのハッシュの value は undef です。
 
-=begin original
-
 =head1 ATTRIBUTES COMMON TO ALL HANDLES
 
-=end original
-
-=head2 全てのハンドルに共通の属性
+(全てのハンドルに共通の属性)
 
 =head3 B<InactiveDestroy> (boolean)
 
@@ -2696,8 +2703,15 @@ $schema を空にしておくと、スキーマサーチパスを使って最初に見つかったテーブルが使
 
 (訳注: サーチパターン)
 
+=begin original
+
 This method will also return tablespace information for servers that support
 tablespaces. See the L</table_info> entry for more information.
+
+=end original
+
+このメソッドはサーバがテーブルスペースをサポートしているときはテーブルスペースの情報も返します。
+さらなる情報は L<table_info> をご覧ください。
 
 =begin original
 
@@ -2739,7 +2753,7 @@ involved:
 
 =end original
 
-プライマリキーのカラム見つかるごとに1つの行を返す標準の形式に加え、C<pg_onerow> 属性を
+プライマリキーのカラムが見つかるごとに1つの行を返す標準の形式に加え、C<pg_onerow> 属性を
 渡すことで、プライマリキーが複数カラムに渡る場合であっても1つの行を返すように強制できます。
 プライマリキーが複数カラムに渡る場合、"KEY_SEQ", "COLUMN_NAME", "DATA_TYPE" の3つのフィールド
 は、カンマ区切りの文字列で返されます。もし C<pg_onerow> 属性に "2" が設定されていると、これらの
@@ -3074,7 +3088,7 @@ every begin. For more details, please see:
 
 現在のデータベースへの接続を、読み取り専用モードにするかどうかを指定します。
 このモードでは、データベースへの変更は許されず、エラーになります。
-この方法は L<AutoCommit> が真のときはB<動きません>。読み取り専用の効果は、
+この方法は L</AutoCommit> が真のときはB<動きません>。読み取り専用の効果は、
 begin が行われたあとに S<SET TRANSACTION READ ONLY> を送ることで成し遂げられます。
 より詳細な情報については、以下を見てください:
 
@@ -3167,126 +3181,275 @@ show all available information.
 値 0 ("TERSE") ("簡潔") は、飾りのない、主要なテキスト、ポジションだけを表示し、
 たいてい一行に収まります。
 値 1 ("DEFAULT") ("デフォルト") は、詳細、ヒント、文脈も表示します。
-値 2 ("VERBOSE") ("饒舌") は、全ての情報を表示します。
+値 2 ("VERBOSE") ("饒舌") は、可能な限り全ての情報を表示します。
 
 (訳注: XXX)
 
 =head3 B<pg_lib_version> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Indicates which version of PostgreSQL that 
 DBD::Pg was compiled against. In other words, which libraries were used. 
 Returns a number with major, minor, and revision together; version 8.1.4 
 would be returned as C<80104>.
 
+=end original
+
+DBD::Pg 特有の属性です。どのバージョンの PostgreSQL に対して DBD::Pg がコンパイルされたかを示します。
+言い換えると、どのライブラリが使われるかを示します。
+メジャー、マイナー、リビジョン番号を繋げた1つの数を返します。バージョン 8.1.4 だと C<80104>
+になります。
+
 =head3 B<pg_server_version> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Indicates which version of PostgreSQL that 
 the current database handle is connected to. Returns a number with major, 
 minor, and revision together; version 8.0.1 would be C<80001>.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のデータベースハンドルが、どのバージョンの PostgreSQL
+に接続しているかを示します。
+メジャー、マイナー、リビジョン番号を繋げた1つの数を返します。バージョン 8.0.1 だと C<80001>
+になります。
+
 =head3 B<Name> (string, read-only)
+
+=begin original
 
 Returns the name of the current database. This is the same as the DSN, without the 
 "dbi:Pg:" part. Before version 2.0.0, this only returned the bare database name 
 (e.g. 'foo'). From version 2.0.0 onwards, it returns the more correct 
 output (e.g. 'dbname=foo')
 
+=end original
+
+現在のデータベース名が返されます。これは "dbi:Pg:" 部分を除いた DSN と同じです。
+バージョン 2.0.0 より前だと、裸のデータベース名が返されます。(例: 'foo')
+バージョン 2.0.0 以降は、よりきちんとした出力をします。(例: 'dbname=foo')
+
 =head3 B<Username> (string, read-only)
+
+=begin original
 
 Returns the name of the user connected to the database.
 
+=end original
+
+データベースに接続しているユーザ名を返します。
+
 =head3 B<pg_db> (string, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the name of the current database.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のデータベース名を返します。
+
 =head3 B<pg_user> (string, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the name of the user that
 connected to the server.
 
+=end original
+
+DBD::Pg 特有の属性です。サーバに接続しているユーザ名を返します。
+
 =head3 B<pg_host> (string, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the host of the current
 server connection. Locally connected hosts will return an empty
 string.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のサーバ接続のホストを返します。
+ローカル接続の場合は空の文字列が返されます。
+
 =head3 B<pg_port> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the port of the connection to
 the server.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のサーバ接続のポートを返します。
+
 =head3 B<pg_socket> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the file description number of
 the connection socket to the server.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のサーバ接続のソケットの記述子を返します。
+
 =head3 B<pg_pass> (string, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the password used to connect
 to the server.
 
+=end original
+
+DBD::Pg 特有の属性です。現在のサーバ接続に使用されているパスワードを返します。
+
 =head3 B<pg_options> (string, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the command-line options passed
 to the server. May be an empty string.
 
+=end original
+
+DBD::Pg 特有の属性です。サーバに渡されたコマンドラインオプションを返します。
+空文字列かもしれません。
+
 =head3 B<pg_default_port> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the default port used if none is
 specifically given.
 
+=end original
+
+DBD::Pg 特有の属性です。ポートが指定されなかったときのデフォルトのポート番号を返します。
+
 =head3 B<pg_pid> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the process id (PID) of the
 backend server process handling the connection.
 
+=end original
+
+DBD::Pg 特有の属性です。この接続を取り扱っているバックエンドサーバプロセスのプロセス ID
+(PID) を返します。
+
 =head3 B<pg_prepare_now> (boolean)
+
+=begin original
 
 DBD::Pg specific attribute. Default is off. If true, then the L</prepare> method will 
 immediately prepare commands, rather than waiting until the first execute.
 
+=end original
+
+DBD::Pg 特有の属性です。デフォルトは off です。真の場合、L</prepare> メソッドは
+直ちに PREPARE 文を発行します。偽の場合 PREPARE 文の発行は最初の execute のときまで待ちます。
+
 =head3 B<pg_expand_array> (boolean)
+
+=begin original
 
 DBD::Pg specific attribute. Defaults to true. If false, arrays returned from the server will 
 not be changed into a Perl arrayref, but remain as a string.
 
+=end original
+
+DBD::Pg 特有の属性です。デフォルトは真です。偽の場合、サーバから返された配列を Perl
+の配列のリファレンスに変換せず、文字列のままにされます。
+
 =head3 B<pg_async_status> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute.
 Returns the current status of an L<asynchronous|/Asynchronous Queries> command.
 0 indicates no asynchronous command is in progress, 1 indicates that an asynchronous
 command has started and -1 indicated that an asynchronous command has been cancelled.
 
+=end original
+
+DBD::Pg 特有の属性です。現在の非同期クエリ L<asynchronous|/Asynchronous Queries> の状態を返します。
+0 は実行中の非同期クエリがないことを示します。1 は非同期クエリがスタートしたことを、-1
+は非同期クエリがキャンセルされたことを示します。
+
 =head3 B<pg_standard_conforming_strings> (boolean, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns true if the server is currently using 
 standard conforming strings. Only available if the target 
 server is version 8.2 or better.
 
+=end original
+
+DBD::Pg 特有の属性です。サーバが標準準拠文字列を使用している場合には真の値が返されます。
+この値はサーバのバージョンが 8.2 かそれ以上の場合のみ有効です。
+
 =head3 B<pg_INV_READ> (integer, read-only)
 
+=begin original
+
 Constant to be used for the mode in L</lo_creat> and L</lo_open>.
+
+=end original
+
+L</lo_creat> と L</lo_open> でモードとして使われる定数。
 
 =head3 B<pg_INV_WRITE> (integer, read-only)
 
+=begin original
+
 Constant to be used for the mode in L</lo_creat> and L</lo_open>.
+
+=end original
+
+L</lo_creat> と L</lo_open> でモードとして使われる定数。
 
 =head3 B<Driver> (handle, read-only)
 
+=begin original
+
 Holds the handle of the parent driver. The only recommended use for this is to find the name 
 of the driver using:
+=end original
+
+親ドライバのハンドルを保持します。親ハンドルの名前を見つけるためだけに使うことが推奨されます。
 
   $dbh->{Driver}->{Name}
 
 =head3 B<pg_protocol> (integer, read-only)
 
+=begin original
+
 DBD::Pg specific attribute. Returns the version of the PostgreSQL server.
 If DBD::Pg is unable to figure out the version, it will return a "0". Otherwise,
 a "3" is returned.
 
+=end original
+
+DBD::Pg 特有の属性です。PostgreSQL サーバの (訳注: プロトコルの) バージョンを返します。
+DBD::Pg がバージョンを調べることができなかったときは
+"0" が返されます。さもなければ "3" が返されます。
+
 =head3 B<RowCacheSize>
 
+=begin original
+
 Not used by DBD::Pg
+
+=end original
+
+DBD::Pg では使用されません。
 
 =head1 DBI STATEMENT HANDLE OBJECTS
 
@@ -4499,5 +4662,11 @@ pgsql-doc-ja では、「1つ目」、「2つ目」で統一されているぽい。
 バージョン、version
 
 可搬性、ポータビリティ
+
+=begin meta
+
+Translate: Atsushi SUGAWARA <peanutsjamjam@gmail.com>
+
+=end meta
 
 =cut
