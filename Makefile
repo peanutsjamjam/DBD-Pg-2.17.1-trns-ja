@@ -11,7 +11,9 @@ html: Pg.pod.utf8
 		--outfile=Pg.html \
 		--index \
 		--title='DBD::Pg - PostgreSQL database driver for the DBI module'
+	rm *.tmp
 
 clean:
 	rm -f *.tmp
+	rm -f *.html
 

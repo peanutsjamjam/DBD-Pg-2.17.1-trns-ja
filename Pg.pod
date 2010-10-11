@@ -3421,6 +3421,7 @@ L</lo_creat> と L</lo_open> でモードとして使われる定数。
 
 Holds the handle of the parent driver. The only recommended use for this is to find the name 
 of the driver using:
+
 =end original
 
 親ドライバのハンドルを保持します。親ハンドルの名前を見つけるためだけに使うことが推奨されます。
