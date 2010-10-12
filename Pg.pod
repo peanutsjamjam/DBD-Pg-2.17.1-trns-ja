@@ -3604,8 +3604,8 @@ doing the next execute.
 
 =end original
 
-データ型は "sticky" です。あるプレースホルダにデータ型をいったん設定すると、明示的に他の型を
-セットしない限り、そのプレースホルダの型として記憶されます。
+データ型は "sticky" です。あるプレースホルダにデータ型をいったん設定すると、
+明示的に他の型を設定しない限り、そのプレースホルダの型として記憶されます。
 ステートメントが既に prepare されていて、そこにデータ型を他のものに変更すると DBD::Pg
 は、次の execute までのあいだに文を再度 prepare します。
 
@@ -3817,51 +3817,111 @@ and indicates what sort of transformation to make to the keys in the hash.
   $tbl_ary_ref = $sth->fetchall_arrayref( $slice );
   $tbl_ary_ref = $sth->fetchall_arrayref( $slice, $max_rows );
 
+=begin original
+
 Returns a reference to an array of arrays that contains all the remaining rows
 to be fetched from the statement handle. If there are no more rows, an empty arrayref
 will be returned. If an error occurs, the data read in so far will be returned.
 Because of this, you should always check C<< $sth->err >> after calling this method,
 unless L</RaiseError> has been enabled.
 
+=end original
+
+ステートメントハンドルから残りの全ての行を取り出して、それを含んだ配列の配列のリファレンスを返します。
+もう行がない場合には、空の配列のリファレンスが返されます。
 エラーが起こった場合でも、エラーが起こるまでに読み込まれたデータはそのまま返されます。
 このため、L</RaiseError> を有効にしていない場合には、このメソッドを呼んだ後で、常に
 C<< $sth->err >> をチェックするべきです。
+
+=begin original
 
 If C<$slice> is an array reference, fetchall_arrayref uses the L</fetchrow_arrayref>
 method to fetch each row as an array ref. If the C<$slice> array is not empty then
 it is used as a slice to select individual columns by perl array index number
 (starting at 0, unlike column and parameter numbers which start at 1).
 
+=end original
+
+C<$slice> が配列のリファレンスの場合、このメソッドは、
+それぞれの行を配列のリファレンスとして取り出すために、内部で L</fetchrow_arrayref>
+を使用します。もし C<$slice> が指す配列が空でない場合、
+それは個別のカラムを選択するためのスライスとして扱われます。
+(指定できる番号はカラムやパラメータの番号が 1 で始まるのとは異なり、 0 から始まります。)
+
+=begin original
+
 With no parameters, or if $slice is undefined,
 fetchall_arrayref acts as if passed an empty array ref.
+
+=end original
+
+引数が無い場合や、$slice が未定義の場合、このメソッドは空の配列のリファレンスを
+渡されたときのように振る舞います。
+
+=begin original
 
 If C<$slice> is a hash reference, fetchall_arrayref uses L</fetchrow_hashref>
 to fetch each row as a hash reference.
 
+=end original
+
+もし C<$slice> がハッシュのリファレンスだった場合は、このメソッドは、
+それぞれの行をハッシュのリファレンスとして取り出すために、内部で L</fetchrow_hashref>
+を使用します。
+
+=begin original
+
 See the DBI documentation for a complete discussion.
+
+=end original
+
+DBI のドキュメントに完全な記述があります。
 
 =head3 B<fetchall_hashref>
 
   $hash_ref = $sth->fetchall_hashref( $key_field );
 
+=begin original
+
 Returns a hashref containing all rows to be fetched from the statement handle.
 See the DBI documentation for a full discussion.
+
+=end original
+
+ステートメントハンドルから全ての行を取り出して、それを含んだハッシュのリファレンスを返します。
+DBI のドキュメントに完全な記述があります。
 
 =head3 B<finish>
 
   $rv = $sth->finish;
 
+=begin original
+
 Indicates to DBI that you are finished with the statement handle and are not going
 to use it again. Only needed when you have not fetched all the possible rows.
+
+=end original
+
+DBI に対して、このステートメントハンドルの使用を終えたので、この先使わないことを伝えます。
+全ての可能な行を読み取っていないが、もう使わないという場合にだけ必要になります。
 
 =head3 B<rows>
 
   $rv = $sth->rows;
 
+=begin original
+
 Returns the number of rows returned by the last query. In contrast to many other DBD modules, 
 the number of rows is available immediately after calling C<< $sth->execute >>. Note that 
 the L</execute> method itself returns the number of rows itself, which means that this 
 method is rarely needed.
+
+=end original
+
+最後のクエリで何行返されたかを返します。他の多くの DBD モジュールとは対照的に、何行返されたか、
+という情報は、C<< $sth->execute >> を呼んだ直後に明らかになっています。L</execute>
+メソッド自体が行数を返すということを思い出してください。
+ですので、このメソッドはめったに必要とはならないでしょう。
 
 =head3 B<bind_col>
 
@@ -3869,20 +3929,41 @@ method is rarely needed.
   $rv = $sth->bind_col($column_number, \$var_to_bind, \%attr );
   $rv = $sth->bind_col($column_number, \$var_to_bind, $bind_type );
 
+=begin original
+
 Binds a Perl variable and/or some attributes to an output column of a SELECT statement. 
 Column numbers count up from 1. You do not need to bind output columns in order to fetch data.
 
+=end original
+
+Perl の変数や属性を、SELECT 文の出力カラムに結び付けます。
+カラムは 1 から数えます。データを取り出すためには、カラムに何かを結びつける必要はありません。
+
+=begin original
+
 See the DBI documentation for a discussion of the optional parameters C<\%attr> and C<$bind_type>
+
+=end original
+
+省略可能なパラメータ C<\%attr> と C<$bind_type> については、DBI のドキュメントをご覧ください。
 
 =head3 B<bind_columns>
 
   $rv = $sth->bind_columns(@list_of_refs_to_vars_to_bind);
 
+=begin original
+
 Calls the L</bind_col> method for each column in the SELECT statement, using the supplied list.
+
+=end original
+
+与えられたリストを使って、SELECT 文のカラムそれぞれに対して L</bind_col> を呼びます。
 
 =head3 B<dump_results>
 
   $rows = $sth->dump_results($maxlen, $lsep, $fsep, $fh);
+
+=begin original
 
 Fetches all the rows from the statement handle, calls C<DBI::neat_list> for each row, and 
 prints the results to C<$fh> (which defaults to F<STDOUT>).
@@ -3890,9 +3971,24 @@ Rows are separated by C<$lsep> (which defaults to a newline).
 Columns are separated by C<$fsep> (which defaults to a comma).
 The C<$maxlen> controls how wide the output can be, and defaults to 35.
 
+=end original
+
+ステートメントハンドルから全ての行を取り出して、各行について C<DBI::neat_list>
+を呼ぶことで C<$fh> (デフォルトは F<STDOUT>) に書き出します。
+行は C<$lsep> (デフォルトは改行) で区切られ、カラムは C<$fsep> (デフォルトはコンマ) で区切られます。
+C<$maxlen> はどれだけの横幅で出力できるかを制御し、デフォルトは 35 です。
+
+=begin original
+
 This method is designed as a handy utility for prototyping and testing queries. Since it uses 
 "neat_list" to format and edit the string for reading by humans, it is not recommended 
 for data transfer applications.
+
+=end original
+
+このメソッドはプロトタイピングやテストのための手軽なユーティリティとして設計されています。
+人間が読むことを意図し "neat_list" をフォーマット、文字列の編集をするために使っていますので、
+データ転送のアプリケーションで使うことは推奨されません。
 
 =head3 B<blob_read>
 
