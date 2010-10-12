@@ -3994,8 +3994,17 @@ for data transfer applications.
 
   $blob = $sth->blob_read($id, $offset, $len);
 
+=begin original
+
 Supported by DBD::Pg. This method is implemented by DBI but not
 currently documented by DBI, so this method might change.
+
+=end original
+
+DBD::Pg によってサポートされています。このメソッドは DBD によって実装されていますが
+現在ドキュメントされていません。なので、この先変更があるかもしれません。
+
+=begin original
 
 This method seems to be heavily influenced by the current implementation of
 blobs in Oracle. Nevertheless we try to be as compatible as possible. Whereas
@@ -4006,6 +4015,18 @@ why the C<blob_read> method is blessed into the STATEMENT package and not part o
 the DATABASE package. Here the field parameter has been used to handle this
 object identifier. The offset and len parameters may be set to zero, in which
 case the whole blob is fetched at once.
+
+=end original
+
+このメソッドの現在の実装は、Oracle の blob に強く影響されているようですが、
+私たちは可能な限り互換性を持つようにトライしました。
+Oracle では blob はテーブルと関連しており、全てのテーブルはたった一つの blob
+しか持てないという制限を
+PostgreSQL は blob をテーブルとは別に、いわゆる object-id を使って扱います。
+これが C<blob_read> メソッドが DATABASE パッケージではなく
+STATEMENT パッケージで bless されていることの理由でしょう。
+XXX
+
 
 See also the PostgreSQL-specific functions concerning blobs, which are
 available via the C<func> interface.
