@@ -49,7 +49,7 @@ DBD::Pg - DBI モジュールのための PostgreSQL データベース・ドラ
   $sth = $dbh->prepare('INSERT INTO mytable(a) VALUES (?)');
   $sth->execute();
 
-  (訳注: いきなりエラーじゃないのか？この最後の2行)
+=for memo いきなりエラーじゃないのか？この最後の2行
 
 =head1 VERSION
 
@@ -494,7 +494,7 @@ DBI によって空の文字列に置き換えられます。
 PostgreSQL で使用されているコードのリストは、ここで見つけることが出来ます:
 L<http://www.postgresql.org/docs/current/static/errcodes-appendix.html>
 
-(訳注: 日本語版のURLも書いとくか)
+=for memo 日本語版のURLも書いとくか
 
 これらのコードは SQL 標準の一部であり、そのうちのほんの一部分が
 PostgreSQL によって使用されています。
@@ -505,7 +505,7 @@ PostgreSQL によって使用されています。
   25P02 失敗したSQLトランザクション内である
   S8006 接続に失敗した
 
-(訳注: S8006 って、08006 の間違いか？)
+=for memo S8006 って、08006 の間違いか？
 
 =head3 B<trace>
 
@@ -533,9 +533,9 @@ flags that DBD::Pg uses, see L<parse_trace_flag|/parse_trace_flag and parse_trac
 トレースの設定は C<< DBI->trace >> でグローバルに設定したり、
 環境変数 I<DBI_TRACE> でも設定できることに注意してください。
 
-(訳注: グローバルな設定しかできないっぽい。
+=for memo グローバルな設定しかできないっぽい。
 複数のステートメントハンドルに異なる出力先を指定しておいて。
-とやってみると、最後に指定した出力先に全部書き出された)
+とやってみると、最後に指定した出力先に全部書き出された
 
 =begin original
 
@@ -637,8 +637,6 @@ DBD::Pg では、サーバサイドの PREPARED 文を広範囲に使用して�
 ここで得られる出力が、必ずしも Postgres に直接渡される形式とはならないことに注意してください。
 出力のポータビリティを最大にするためには、(パフォーマンスに影響する可能性はありますが)
 C<< $dbh->{pg_server_prepare} = 0 >> と共に使用してください。
-
-(訳注: XXX)
 
 =item DBD
 
@@ -867,8 +865,8 @@ C<pg_INV_READ> でオープンしたオブジェクトには書き込むこと�
 を実行した時に有効だったトランザクションスナップショットの時点の
 ラージオブジェクトの内容を読むことになります。
 
-(訳注: 原文の C<lo_write> は明らかに C<lo_open> の間違い。
-see. postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン)
+=for memo 原文の C<lo_write> は明らかに C<lo_open> の間違い。
+see. postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン
 
 =begin original
 
@@ -1092,7 +1090,7 @@ L</disconnect> メソッドが自動的に呼ばれなくなります。
 あなたのスクリプトが処理を続けられるようにする方法については、
 L</Asynchronous Queries> セクションを見てください。
 
-(訳注: tread carefully は treat carefully か？)
+=for memo tread carefully は treat carefully か？
 
 =head3 B<RaiseError> (boolean, inherited)
 
@@ -1197,7 +1195,9 @@ Use of this attribute is not encouraged.
 ハンドルがアクティブかどうかを示します。
 データベースハンドルでは、disconnect されているかどうかを示します。
 ステートメントハンドルでは、全てのデータが fetch されたかどうかを示します。
-この属性の使用は奨励されません。(訳注: 代わりに XXX を...)
+この属性の使用は奨励されません。
+
+(訳注: 接続がまだ有効かどうかを調べるには L</ping> メソッドが使えます。)
 
 =head3 B<Kids> (integer, read-only)
 
@@ -1610,8 +1610,6 @@ longer has to worry about quoting each value before sending it to the server.
 かなり速くなる、というのが理由ですが、それだけではなく、サーバにクエリを送る前に
 DBD::Pg 側でそれぞれの値をクォートするという面倒を見なくて済むという理由もあります。
 
-(訳注: XXX)
-
 =begin original
 
 However, there are some drawbacks. The server cannot always choose the ideal
@@ -1688,8 +1686,6 @@ be provided after the prepare but before the execute.
 最初の execute が呼ばれるまで実行されません。
 これは、データ型についての情報が execute をするときまでに( L</bind_param> によって)
 与えられるというのが理由です。
-
-(訳注: XXX)
 
 =begin original
 
@@ -2616,7 +2612,7 @@ Examples of use:
   }
 
 
-  # 'foo' という名前のテーブルを持つスキーマを全て表示 XXX
+  # 'foo' という名前のテーブルを持つスキーマを全て表示
   $sth = $dbh->table_info('', undef, 'foo', 'TABLE');
   for my $rel (@{$sth->fetchall_arrayref({})}) {
     print "Table name is $rel->{TABLE_SCHEM}.$rel->{TABLE_NAME}\n";
@@ -3118,7 +3114,7 @@ This method method requires DBI version 1.55 or better.
 変更する方法が残されています。この属性は INSERT, UPDATE, DELETE
 を発行するべきでないときのセーフティネットだと考えてください。
 
-(訳注: 原文の Please not は Please note の typo)
+=for memo 原文の Please not は Please note の typo
 
 =head3 B<pg_server_prepare> (integer)
 
@@ -3192,8 +3188,6 @@ show all available information.
 たいてい一行に収まります。
 値 1 ("DEFAULT") ("デフォルト") は、詳細、ヒント、文脈も表示します。
 値 2 ("VERBOSE") ("饒舌") は、可能な限り全ての情報を表示します。
-
-(訳注: XXX)
 
 =head3 B<pg_lib_version> (integer, read-only)
 
@@ -4027,7 +4021,6 @@ STATEMENT パッケージで bless されていることの理由でしょう。
 
 XXX
 
-
 See also the PostgreSQL-specific functions concerning blobs, which are
 available via the C<func> interface.
 
@@ -4603,8 +4596,7 @@ L<pg_expand_array|/pg_expand_array_(boolean)> 属性を偽に設定してくだ�
   $dbh->{pg_expand_array} = 0;
 
 (訳注: Perl の配列は添え字が 0 から始まりますが、Postgresでは 1
-から始まることに注意が必要です。いずれにせよ、配列の最初の要素は、
-配列の最初の要素として扱われます。)
+から始まることに注意が必要です。)
 
 =head2 COPY support
 
