@@ -1465,6 +1465,11 @@ which columns to return. See the DBI documentation for full details.
 
   $sth = $dbh->prepare($statement, \%attr);
 
+=for memo XXX
+ここから prepare の説明が始まるが、このメソッドが何を返すかという記述が無いっぽい。
+まあ、説明は要らないのかもしれない。でも、prepare が失敗したら undef になるのか、
+失敗したというステートを持ったステートメントハンドルが返されるのか、等々。
+
 =begin original
 
 WARNING: DBD::Pg now (as of version 1.40) uses true prepared statements by sending them 
@@ -1509,7 +1514,7 @@ Queries that do not begin with the word "SELECT", "INSERT",
 クエリの最初の語が、"SELECT", "INSERT", "UPDATE", "DELETE" のいずれでもない場合は、
 サーバサイドに準備された文を作成しようとしません。
 
-(訳注: WITH はだめなのか？)
+=for memo XXX WITH はだめなのか？
 
 =begin original
 
@@ -1535,7 +1540,7 @@ version 7.4 のサーバに対しては、特別なデフォルト値 "2" があります。
 このバージョンではサーバサイドの文が部分的にしかサポートされていない為です。
 この場合、全てのパラメータの値が指定されたときにだけサーバサイドの準備された文が使用されます。
 
-(訳注: 全てのパラメータが指定されない場合ってあるっけ？)
+=for memo XXX 全てのパラメータが指定されない場合ってあるっけ？
 
 =begin original
 
@@ -1640,7 +1645,7 @@ DBD::Pg 経由で準備された文を使わないようにするか、あるいは
 pgsql-performance メーリングリスト L<http://archives.postgresql.org/pgsql-performance/>
 をご覧ください。
 
-(訳注: parse plan:解析計画？ 実行計画とした。)
+=for memo XXX parse plan:解析計画？ 実行計画とした
 
 =begin original
 
@@ -2363,8 +2368,9 @@ PID、そしてオプションの通知パラメータです。このメソッドは、
 の使用に先立って commit する必要があるかもしれません。新しく到着した通知は、
 トランザクションの途中で拾い上げられることはありません。例:
 
-(訳注: 原文の event name は「条件通知名」、payload string は「通知パラメータ」とした。
-pgsql-doc-ja 「30.7. 非同期通知」より。)
+=for memo XXX
+原文の event name は「条件通知名」、payload string は「通知パラメータ」とした。
+pgsql-doc-ja 「30.7. 非同期通知」より。
 
 =begin original
 
@@ -2708,7 +2714,7 @@ DBI の提案によりこのドライバでサポートされています。サーチパターンは許されていま
 $schema を空にしておくと、スキーマサーチパスを使って最初に見つかったテーブルが使われます。
 "COLUMN_NAME" フィールドのそれぞれのデータ型を示す "DATA_TYPE" フィールドも追加で返されます。
 
-(訳注: サーチパターン)
+=for memo XXX サーチパターン
 
 =begin original
 
@@ -2775,10 +2781,10 @@ involved:
     }
   }
 
-(訳注: C<pg_onerow> 属性に "0" を設定しても、"1"
-を設定している時と同様にカンマ区切りになる模様。
+=for memo XXX
+C<pg_onerow> 属性に "0" を設定しても、"1" を設定している時と同様にカンマ区切りになる模様。
 複数のプライマリキー・カラムに対して、複数の行を得たい場合は、C<pg_onerow>
-自体を指定しないでおく必要がある)
+自体を指定しないでおく必要がある
 
 =head3 B<primary_key>
 
@@ -4223,6 +4229,8 @@ Returns the database handle this statement handle was created from.
 
 =head3 B<ParamValues> (hash ref, read-only)
 
+=begin original
+
 Returns a reference to a hash containing the values currently bound to placeholders.
 If the "named parameters" type of placeholders are being used (such as ":foo"),
 then the keys of the hash will be the names of the placeholders (without the colon).
@@ -4230,10 +4238,28 @@ If the "dollar sign numbers" type of placeholders are being used, the keys of th
 be the numbers, without the dollar signs. If the "question mark" type is used,
 integer numbers will be returned, starting at one and increasing for every placeholder.
 
+=end original
+
+現在プレースホルダに結び付けられている値を含んだハッシュを、リファレンスで返します。
+"named parameters" タイプのプレースホルダ (":foo" の形式)
+を使用している場合、ハッシュのキーはプレースホルダの名前部分が使われます (コロンは除く)。
+"dollar sign numbers" タイプのプレースホルダを使用している場合は、ハッシュのキーは番号です。
+ドルマークはつきません。"question mark" タイプを使っている場合は、ハッシュのキーは 1
+から始まり各プレースホルダ毎に増えていく整数です。
+
+=begin original
+
 If this method is called before L</execute>, the literal values passed in are returned.
 If called after L</execute>, then the quoted versions of the values are returned.
 
+=end original
+
+もし L</execute> の前にこのメソッドが呼ばれた場合、以前に渡した値がそのまま返されます。
+L</execute> の後に呼ばれた場合は、各値のクォートされたものが返されます。
+
 =head3 B<ParamTypes> (hash ref, read-only)
+
+=begin original
 
 Returns a reference to a hash containing the type names currently bound to placeholders.
 The keys are the same as returned by the ParamValues method.
@@ -4244,34 +4270,85 @@ the type originally passed in.
 (Placeholders that have not yet been bound will return undef as the value).
 This allows the output of ParamTypes to be passed back to the L</bind_param> method.
 
+=end original
+
+現在プレースホルダに結び付けられている型名を含んだハッシュへのリファレンスを返します。
+ハッシュのキーは ParamValues 属性と同じです。
+ハッシュの値は、キーと値のペアを1つ含んだハッシュへのリファレンスです。
+このハッシュのキーは 'TYPE' か 'pg_type' のどちらかです。
+もし、カラムの型が一般の SQL の名前を持つ場合には 'TYPE' が使われます。
+もし、カラムの型名が Postgres の型名でしか表現できない場合には 'pg_type' が使われます。
+ハッシュの値は、もともと渡された型に対応する内部コードです。
+(プレースホルダがまだ結び付けられていない場合は値として undef が返されます。)
+ParamTypes の出力は L</bind_param> メソッドに渡しなおすことができます。
+
 =head3 B<Statement> (string, read-only)
+
+=begin original
 
 Returns the statement string passed to the most recent "prepare" method called in
 this database handle, even if that method failed.
 This is especially useful where "RaiseError" is enabled and the exception handler
 checks $@ and sees that a C<prepare> method call failed.
 
+=end original
+
+このデータベースハンドルに対していちばん最近行われた "prepare" メソッドの呼び出し
+(失敗した "prepare" も含む) で渡された SQL 文を文字列で返します。
+"RaiseError" が有効なところで、例外が起こり、例外ハンドラが $@ をチェックしたときに
+C<prepare> が失敗したことがわかった場合に特に便利です。
+
+=for memo XXX 日本語になっとらん
+
 =head3 B<pg_current_row> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the number of the tuple (row) that was
 most recently fetched. Returns zero before and after fetching is performed.
 
+=end original
+
+DBD::Pg 特有の属性です。いちばん最近の fetch でのタプル (行) の番号を返します。
+fetch が行われる前や、全ての行を fetch してしまった後では、ゼロが返されます。
+
 =head3 B<pg_numbound> (integer, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns the number of placeholders
 that are currently bound (via bind_param).
 
+=end original
+
+DBD::Pg 特有の属性です。(bind_param で) 結び付けられているプレースホルダの数を返します。
+
 =head3 B<pg_bound> (hashref, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. Returns a hash of all named placeholders. The
 key is the name of the placeholder, and the value is a 0 or a 1, indicating if
 the placeholder has been bound yet (e.g. via bind_param)
 
+=end original
+
+DBD::Pg 特有の属性です。名前つきプレースホルダの情報をハッシュで返します。
+キーはプレースホルダ名で、値は 0 か 1 です。プレースホルダに、
+(bind_param で) もう値が割り当てられたかどうかを示します。
+
 =head3 B<pg_size> (arrayref, read-only)
+
+=begin original
 
 DBD::Pg specific attribute. It returns a reference to an array of integer
 values for each column. The integer shows the size of the column in
 bytes. Variable length columns are indicated by -1.
+
+=end original
+
+DBD::Pg 特有の属性です。各カラムに対応する整数を含む配列へのリファレンスを返します。
+この整数は、カラムのサイズを byte の単位で表します。可変長のカラムは -1 で示されます。
 
 =head3 B<pg_type> (arrayref, read-only)
 
