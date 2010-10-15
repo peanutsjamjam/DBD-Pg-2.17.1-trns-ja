@@ -49,7 +49,8 @@ DBD::Pg - DBI モジュールのための PostgreSQL データベース・ドラ
   $sth = $dbh->prepare('INSERT INTO mytable(a) VALUES (?)');
   $sth->execute();
 
-=for memo いきなりエラーじゃないのか？この最後の2行
+=for memo XXX いきなりエラーじゃないのか？この最後の2行。プレースホルダ '?' があるのに、
+対応する値を execute に渡していない。
 
 =head1 VERSION
 
@@ -494,7 +495,7 @@ DBI によって空の文字列に置き換えられます。
 PostgreSQL で使用されているコードのリストは、ここで見つけることが出来ます:
 L<http://www.postgresql.org/docs/current/static/errcodes-appendix.html>
 
-=for memo 日本語版のURLも書いとくか
+=for memo XXX 日本語版のURLも書いとくか
 
 これらのコードは SQL 標準の一部であり、そのうちのほんの一部分が
 PostgreSQL によって使用されています。
@@ -505,7 +506,7 @@ PostgreSQL によって使用されています。
   25P02 失敗したSQLトランザクション内である
   S8006 接続に失敗した
 
-=for memo S8006 って、08006 の間違いか？
+=for memo XXX S8006 って、08006 の間違いか？
 
 =head3 B<trace>
 
@@ -533,7 +534,7 @@ flags that DBD::Pg uses, see L<parse_trace_flag|/parse_trace_flag and parse_trac
 トレースの設定は C<< DBI->trace >> でグローバルに設定したり、
 環境変数 I<DBI_TRACE> でも設定できることに注意してください。
 
-=for memo グローバルな設定しかできないっぽい。
+=for memo XXX グローバルな設定しかできないっぽい。
 複数のステートメントハンドルに異なる出力先を指定しておいて。
 とやってみると、最後に指定した出力先に全部書き出された
 
@@ -724,13 +725,15 @@ the database has been disconnected. Also output if trace level is 5 or greater.
 
 =for text See the DBI section on TRACING for more information.
 
-=for html See the <a href="http://search.cpan.org/~timb/DBI/DBI.pm#TRACING">DBI section on TRACING</a> for more information.<br />
+=for html See the <a href="http://search.cpan.org/~timb/DBI/DBI.pm#TRACING">DBI
+section on TRACING</a> for more information.<br />
 
 =end original
 
 =for text より詳しい情報は、DBI の TRACING のセクションにあります。
 
-=for html より詳しい情報は、<a href="http://search.cpan.org/~timb/DBI/DBI.pm#TRACING">DBI の TRACING のセクション</a> にあります。<br />
+=for html より詳しい情報は、<a href="http://search.cpan.org/~timb/DBI/DBI.pm#TRACING">DBI
+の TRACING のセクション</a> にあります。<br />
 
 =head3 B<func>
 
@@ -865,7 +868,7 @@ C<pg_INV_READ> でオープンしたオブジェクトには書き込むこと�
 を実行した時に有効だったトランザクションスナップショットの時点の
 ラージオブジェクトの内容を読むことになります。
 
-=for memo 原文の C<lo_write> は明らかに C<lo_open> の間違い。
+=for memo XXX 原文の C<lo_write> は明らかに C<lo_open> の間違い。
 see. postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン
 
 =begin original
@@ -1090,7 +1093,7 @@ L</disconnect> メソッドが自動的に呼ばれなくなります。
 あなたのスクリプトが処理を続けられるようにする方法については、
 L</Asynchronous Queries> セクションを見てください。
 
-=for memo tread carefully は treat carefully か？
+=for memo XXX tread carefully は treat carefully か？
 
 =head3 B<RaiseError> (boolean, inherited)
 
@@ -2494,9 +2497,9 @@ In practice, you should only ever see -1 and -2.
 Supports a very large set (> 250) of the information types, including the minimum 
 recommended by DBI.
 
-(訳注: XXX)
-
 =end original
+
+=for memo XXX
 
 =head3 B<table_info>
 
@@ -3114,7 +3117,7 @@ This method method requires DBI version 1.55 or better.
 変更する方法が残されています。この属性は INSERT, UPDATE, DELETE
 を発行するべきでないときのセーフティネットだと考えてください。
 
-=for memo 原文の Please not は Please note の typo
+=for memo XXX 原文の Please not は Please note の typo
 
 =head3 B<pg_server_prepare> (integer)
 
@@ -4014,19 +4017,37 @@ case the whole blob is fetched at once.
 このメソッドの現在の実装は、Oracle の blob に強く影響されているようですが、
 私たちは可能な限り互換性を持つようにトライしました。
 Oracle では blob はテーブルと関連しており、全てのテーブルはたった一つの blob
-しか持てないという制限を
-PostgreSQL は blob をテーブルとは別に、いわゆる object-id を使って扱います。
+しか持てないという制限があります。
 これが C<blob_read> メソッドが DATABASE パッケージではなく
 STATEMENT パッケージで bless されていることの理由でしょう。
+対して、PostgreSQL は blob をテーブルとは別に、いわゆる object-id を使って扱います。
+ここでは、フィールドパラメータがこのオブジェクト id を取り扱うために使われています。
+blob を一度に取り出す場合、offset と len 引数は 0 にセットします。
 
-XXX
+=for memo XXX いまいち自信が無い。
+
+=begin original
 
 See also the PostgreSQL-specific functions concerning blobs, which are
 available via the C<func> interface.
 
+=end original
+
+C<func> インタフェース経由で扱える blob に関する PostgreSQL 特有の関数についてもご覧ください。
+
+=begin original
+
 For further information and examples about blobs, please read the chapter
 about Large Objects in the PostgreSQL Programmer's Guide at
 L<http://www.postgresql.org/docs/current/static/largeobjects.html>.
+
+=end original
+
+より詳しい blob に関する情報や例がありますので、PostgreSQL Programmer's Guide
+のラージオブジェクトに関する部分をお読みください。
+L<http://www.postgresql.org/docs/current/static/largeobjects.html>.
+
+=for memo XXX 日本語版のURLをつける
 
 =head2 Statement Handle Attributes
 
@@ -4034,52 +4055,118 @@ L<http://www.postgresql.org/docs/current/static/largeobjects.html>.
 
 =head3 B<NUM_OF_FIELDS> (integer, read-only)
 
+=begin original
+
 Returns the number of columns returned by the current statement.
 A number will only be returned for SELECT statements, for SHOW statements
 (which always return C<1>), and for INSERT, UPDATE, and DELETE statements which
 contain a RETURNING clause.
 This method returns undef if called before C<execute()>.
 
+=end original
+
+現在の文で返されるカラムの数。この値は SELECT 文と SHOW 文の場合 (SHOW 文のときは常に C<1>) 
+また、INSERT, UPDATE, DELETE 文に RETURNING 句がある場合にだけ値が返されます。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<NUM_OF_PARAMS> (integer, read-only)
+
+=begin original
 
 Returns the number of placeholders in the current statement.
 
+=end original
+
+現在の文のプレースホルダの数を返します。
+
 =head3 B<NAME> (arrayref, read-only)
+
+=begin original
 
 Returns an arrayref of column names for the current statement. This 
 method will only work for SELECT statements, for SHOW statements, and for 
 INSERT, UPDATE, and DELETE statements which contain a RETURNING clause.
 This method returns undef if called before C<execute()>.
 
+=end original
+
+現在の文のカラム名を含む配列のリファレンスを返します。
+この値は SELECT 文と SHOW 文の場合、また、
+INSERT, UPDATE, DELETE 文に RETURNING 句がある場合にだけ値が返されます。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<NAME_lc> (arrayref, read-only)
+
+=begin original
 
 The same as the C<NAME> attribute, except that all column names are forced to lower case.
 
+=end original
+
+C<NAME> 属性と同様ですが、カラム名は小文字で返されます。
+
 =head3 B<NAME_uc>  (arrayref, read-only)
+
+=begin original
 
 The same as the C<NAME> attribute, except that all column names are forced to upper case.
 
+=end original
+
+C<NAME> 属性と同様ですが、カラム名は大文字で返されます。
+
 =head3 B<NAME_hash> (hashref, read-only)
+
+=begin original
 
 Similar to the C<NAME> attribute, but returns a hashref of column names instead of an arrayref.
 The names of the columns are the keys of the hash, and the values represent the order
 in which the columns are returned, starting at 0.
 This method returns undef if called before C<execute()>.
 
+=end original
+
+C<NAME> と同様ですが、配列ではなく、カラム名のハッシュのリファレンスで返されます。
+カラム名がハッシュのキーになり、値は 0 から始まるカラムの順番を示す数です。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<NAME_lc_hash> (hashref, read-only)
 
+=begin original
+
 The same as the C<NAME_hash> attribute, except that all column names are forced to lower case.
+
+=end original
+
+C<NAME_hash> と同様ですが、カラム名は小文字で返されます。
 
 =head3 B<NAME_uc_hash> (hashref, read-only)
 
+=begin original
+
 The same as the C<NAME_hash> attribute, except that all column names are forced to lower case.
 
+=end original
+
+C<NAME_hash> と同様ですが、カラム名は大文字で返されます。
+
+=for memo XXX typo? lower case -> upper case
+
 =head3 B<TYPE> (arrayref, read-only)
+
+=begin original
 
 Returns an arrayref indicating the data type for each column in the statement. 
 This method returns undef if called before C<execute()>.
 
+=end original
+
+文中のそれぞれのカラムのデータ型が配列のリファレンスで返されます。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<PRECISION> (arrayref, read-only)
+
+=begin original
 
 Returns an arrayref of integer values for each column returned by the statement. 
 The number indicates the precision for C<NUMERIC> columns, the size in number of 
@@ -4087,21 +4174,52 @@ characters for C<CHAR> and C<VARCHAR> columns, and for all other types of column
 it returns the number of I<bytes>.
 This method returns undef if called before C<execute()>.
 
+=end original
+
+返されるカラムそれぞれに関する整数値が配列のリファレンスで返されます。
+それぞれの値は、C<NUMERIC> カラムの場合は正確にその値、C<CHAR> や C<VARCHAR>
+の場合は文字数、そのほかのデータ型に対してはバイト数です。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<SCALE> (arrayref, read-only)
+
+=begin original
 
 Returns an arrayref of integer values for each column returned by the statement. The number 
 indicates the scale of the that column. The only type that will return a value is C<NUMERIC>.
 This method returns undef if called before C<execute()>.
 
+=end original
+
+返されるカラムそれぞれに関する整数値が配列のリファレンスで返されます。
+この値は返されるカラムの scale (位取り、小数点以下の桁数) を示します。
+返されるカラムの型が C<NUMERIC> のときにだけ値が返されます。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<NULLABLE> (arrayref, read-only)
+
+=begin original
 
 Returns an arrayref of integer values for each column returned by the statement. The number 
 indicates if the column is nullable or not. 0 = not nullable, 1 = nullable, 2 = unknown. 
 This method returns undef if called before C<execute()>.
 
+=end original
+
+返されるカラムそれぞれに関する整数値が配列のリファレンスで返されます。
+この値は、カラムに NULL が許されているかどうかを示し、0 の場合 NOT NULL、1
+の場合 NULL が許されている、2 は不明を示します。
+C<execute()> を呼ぶ前には、undef が返されます。
+
 =head3 B<Database> (dbh, read-only)
 
+=begin original
+
 Returns the database handle this statement handle was created from.
+
+=end original
+
+このステートメントハンドルが作られた元のデータベースハンドルが返されます。
 
 =head3 B<ParamValues> (hash ref, read-only)
 
