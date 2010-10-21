@@ -822,9 +822,15 @@ The old way of calling large objects functions is deprecated: $dbh->func(.., 'lo
 
 失敗した場合は C<undef> が返されます。この関数は AutoCommit が有効な場合は使用できません。
 
-ラージオブジェクト関数の古い使い方は deprecated です: C<< $dbh->func(..., 'lo_); >>
+ラージオブジェクト関数の古い使い方は deprecated です: C<< $dbh->func(..., 'pg_lo_); >>
+
+=begin original
 
 =item lo_open
+
+=end original
+
+=item pg_lo_open
 
   $lobj_fd = $dbh->pg_lo_open($lobjId, $mode);
 
@@ -836,7 +842,7 @@ access to the opened object. It may be one of:
 
 =end original
 
-既存のラージオブジェクトをオープンし、引き続く C<lo_*>
+既存のラージオブジェクトをオープンし、引き続く C<pg_lo_*>
 呼び出しで使うためのオブジェクト記述子を返します。
 C<$mode> はオープンしたオブジェクトへの読み書きアクセスを指定するビットマスクで、
 次のうちのどれかです:
@@ -864,11 +870,11 @@ C<pg_INV_WRITE> と C<pg_INV_WRITE | pg_INV_READ> は区別されません。
 現在のトランザクションによる書き込みすべてを反映したデータを読むことになります。
 
 C<pg_INV_READ> でオープンしたオブジェクトには書き込むことはできません。
-このモードで開いたオブジェクトを読み取ると、C<lo_open>
+このモードで開いたオブジェクトを読み取ると、C<pg_lo_open>
 を実行した時に有効だったトランザクションスナップショットの時点の
 ラージオブジェクトの内容を読むことになります。
 
-=for memo XXX 原文の C<lo_write> は明らかに C<lo_open> の間違い。
+=for memo XXX 原文の C<lo_write> は明らかに C<pg_lo_open> の間違い。
 see. postgres-pg844doc-j/31.3.4. 既存のラージオブジェクトのオープン
 
 =begin original
@@ -882,7 +888,13 @@ object descriptor! This function cannot be used if AutoCommit is enabled.
 0 が完全に正しい (そして、ありふれた) オブジェクト記述子であることに注意してください!
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_write
+
+=end original
+
+=item pg_lo_write
 
   $nbytes = $dbh->pg_lo_write($lobj_fd, $buffer, $len);
 
@@ -898,7 +910,13 @@ This function cannot be used if AutoCommit is enabled.
 書き込まれたバイト数が返されます。失敗した場合は C<undef> が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_read
+
+=end original
+
+=item pg_lo_read
 
   $nbytes = $dbh->pg_lo_read($lobj_fd, $buffer, $len);
 
@@ -913,7 +931,13 @@ bytes read and C<undef> upon failure. This function cannot be used if AutoCommit
 読み込んだバイト数が返されます。失敗した場合は、C<undef> が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_lseek
+
+=end original
+
+=item pg_lo_lseek
 
   $loc = $dbh->pg_lo_lseek($lobj_fd, $offset, $whence);
 
@@ -930,7 +954,13 @@ location and C<undef> upon failure. This function cannot be used if AutoCommit i
 現在の読み書きの位置が返されます。失敗した場合は C<undef> が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_tell
+
+=end original
+
+=item pg_lo_tell
 
   $loc = $dbh->pg_lo_tell($lobj_fd);
 
@@ -946,7 +976,13 @@ This function cannot be used if AutoCommit is enabled.
 失敗した場合は C<undef> が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_close
+
+=end original
+
+=item pg_lo_close
 
   $lobj_fd = $dbh->pg_lo_close($lobj_fd);
 
@@ -961,7 +997,13 @@ This function cannot be used if AutoCommit is enabled.
 成功時には真が、失敗時には偽が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_unlink
+
+=end original
+
+=item pg_lo_unlink
 
   $ret = $dbh->pg_lo_unlink($lobjId);
 
@@ -976,7 +1018,13 @@ This function cannot be used if AutoCommit is enabled.
 成功時には真が、失敗時には偽が返されます。
 この関数は AutoCommit が有効な場合は使用することはできません。
 
+=begin original
+
 =item lo_import
+
+=end original
+
+=item pg_lo_import
 
   $lobjId = $dbh->pg_lo_import($filename);
 
@@ -990,9 +1038,16 @@ object or C<undef> upon failure.
 Unix のファイルをラージオブジェクトとしてインポートし、新しいオブジェクトの
 object-id を返します。失敗時には C<undef> が返されます。
 
+
 =item lo_import_with_oid
 
+=begin original
+
   $lobjId = $dbh->pg_lo_import($filename, $OID);
+
+=end original
+
+  $lobjId = $dbh->pg_lo_import_with_oid($filename, $OID);
 
 =begin original
 
@@ -1005,14 +1060,20 @@ server version 8.4 or later.
 
 =end original
 
-lo_import と同様ですが、指定された OID を object-id として使うように試みます。
-指定された数値が 0 の場合は、lo_import と同じ振る舞いに fall back します。
+pg_lo_import と同様ですが、指定された OID を object-id として使うように試みます。
+指定された数値が 0 の場合は、pg_lo_import と同じ振る舞いに fall back します。
 (object-id として、空いている番号を割り当てます。)
 
 この機能は、DBD::Pg が Postgres server version 8.4
 以降に対してコンパイルされた場合のみ、有効です。
 
+=begin original
+
 =item lo_export
+
+=end original
+
+=item pg_lo_export
 
   $ret = $dbh->pg_lo_export($lobjId, $filename);
 
@@ -3416,7 +3477,7 @@ Constant to be used for the mode in L</lo_creat> and L</lo_open>.
 
 =end original
 
-L</lo_creat> と L</lo_open> でモードとして使われる定数。
+L</pg_lo_creat> と L</pg_lo_open> でモードとして使われる定数。
 
 =head3 B<pg_INV_WRITE> (integer, read-only)
 
@@ -3426,7 +3487,7 @@ Constant to be used for the mode in L</lo_creat> and L</lo_open>.
 
 =end original
 
-L</lo_creat> と L</lo_open> でモードとして使われる定数。
+L</pg_lo_creat> と L</pg_lo_open> でモードとして使われる定数。
 
 =head3 B<Driver> (handle, read-only)
 
