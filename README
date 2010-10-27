@@ -1,1 +1,13 @@
-This is my translation of DBD-Pg-2.17.1 (PostgreSQL database driver for the DBI module).
+README For This Project.
+
+This is my japanese translation of DBD-Pg-2.17.1 (PostgreSQL database driver for the DBI module).
+
+Perl で PostgreSQL をいじるときに必要となるモジュール、DBD-Pg-2.17.1 の Pod ドキュメントの翻訳を進めています。
+まだ途中です。
+
+Pg.pod は EUC-JP です。
+Pg.pod.utf8 は UTF-8 です。
+
+どちらのファイルも、エンコード以外は同一の内容を含むように気を付けてはいます。
+
+github Web 上でブラウズする場合は utf8 のほうを選ぶと、文字化けせずに見えると思います。
