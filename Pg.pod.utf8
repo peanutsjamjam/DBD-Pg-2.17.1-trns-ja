@@ -1747,10 +1747,6 @@ be provided after the prepare but before the execute.
 
 =end original
 
-The actual C<PREPARE> is usually not performed until the first execute is called, due
-to the fact that information on the data types (provided by L</bind_param>) may
-be provided after the prepare but before the execute.
-
 実際の C<PREPARE> 文は普通、
 最初の execute が呼ばれるまで実行されません。
 これは、データ型についての情報が execute をするときまでに( L</bind_param> によって)
@@ -2488,6 +2484,13 @@ This C<ping> method is used to check the validity of a database handle. The valu
 either 0, indicating that the connection is no longer valid, or a positive integer, indicating
 the following:
 
+=end original
+
+C<ping> メソッドは、データベースハンドルが有効かどうかチェックするのに使用されます。
+戻り値 0 は、接続がもう有効でないことを示し、正整数は次のことを示します:
+
+=begin original
+
   Value    Meaning
   --------------------------------------------------
     1      Database is idle (not in a transaction)
@@ -2496,9 +2499,6 @@ the following:
     4      Database is idle, within a failed transaction
 
 =end original
-
-C<ping> メソッドは、データベースハンドルが有効かどうかチェックするのに使用されます。
-戻り値 0 は、接続がもう有効でないことを示し、正整数は次のことを示します:
 
   Value    Meaning
   --------------------------------------------------
@@ -2529,6 +2529,14 @@ returning a 0 for an invalid connection, it will return a negative number. So in
 addition to returning the positive numbers documented for C<ping>, it may also
 return the following:
 
+=end original
+
+これは DBD::Pg 独自の L</ping> の拡張です。データベースハンドルの有効性を C<ping>
+とまったく同じ方法でチェックしますが、接続が有効でないときに 0 を返すのではなく、
+代わりに負の数を返します。C<ping> に記述されている正整数に加え、以下の負数を返します:
+
+=begin original
+
   Value    Meaning
   --------------------------------------------------
    -1      There is no connection to the database at all (e.g. after C<disconnect>)
@@ -2536,10 +2544,6 @@ return the following:
    -3      The handle exists, but no data was returned from a test query.
 
 =end original
-
-これは DBD::Pg 独自の L</ping> の拡張です。データベースハンドルの有効性を C<ping>
-とまったく同じ方法でチェックしますが、接続が有効でないときに 0 を返すのではなく、
-代わりに負の数を返します。C<ping> に記述されている正整数に加え、以下の負数を返します:
 
   Value    Meaning
   --------------------------------------------------
@@ -2566,7 +2570,10 @@ recommended by DBI.
 
 =end original
 
-=for memo XXX
+Supports a very large set (> 250) of the information types, including the minimum
+recommended by DBI.
+
+=for memo XXX 未訳
 
 =head3 B<table_info>
 
@@ -3718,30 +3725,31 @@ Examples:
   $SQL = "SELECT id FROM ptable WHERE size > ? AND title = ?";
   $sth = $dbh->prepare($SQL);
 
-  ## Both arguments below are bound to placeholders as "varchar"
+  ## この2つの引数は、プレースホルダに "varchar" として結び付けられます
   $sth->execute(123, "Merk");
 
-  ## Reset the datatype for the first placeholder to an integer
+  ## 1つ目のプレースホルダの型を integer 型にリセットします
   $sth->bind_param(1, undef, SQL_INTEGER);
 
-  ## The "undef" bound above is not used, since we supply params to execute
+  ## 実行時にパラメータを与えると、上記で与えた "undef" は使われなくなる
   $sth->execute(123, "Merk");
 
-  ## Set the first placeholder's value and data type
+  ## 最初のプレースホルダに、値と型をセットする
   $sth->bind_param(1, 234, { pg_type => PG_TIMESTAMP });
 
-  ## Set the second placeholder's value and data type.
-  ## We don't send a third argument, so the default "varchar" is used
+  ## 2つ目のプレースホルダに、値を型をセットする。
+  ## 3つ目の引数を書いていないので、デフォルトの "varchar" が使われる
   $sth->bind_param('$2', "Zool");
 
-  ## We realize that the wrong data type was set above, so we change it:
+  ## 上で間違ったデータ型をセットしたのに気がついたので、変更する:
   $sth->bind_param('$1', 234, { pg_type => SQL_INTEGER });
 
-  ## We also got the wrong value, so we change that as well.
-  ## Because the data type is sticky, we don't need to change it
+  ## 値もまた間違っていたので、こちらも変更する。
+  ## データタイプは sticky なので、変更する必要は無い
   $sth->bind_param(1, 567);
 
   ## This executes the statement with 567 (integer) and "Zool" (varchar)
+  ## ここで execute すると、567 (integer) と "Zool" (varchar) の値で実行される
   $sth->execute();
 
 =head3 B<bind_param_inout>
