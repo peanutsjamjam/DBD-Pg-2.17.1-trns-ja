@@ -3748,13 +3748,14 @@ Examples:
   ## データタイプは sticky なので、変更する必要は無い
   $sth->bind_param(1, 567);
 
-  ## This executes the statement with 567 (integer) and "Zool" (varchar)
   ## ここで execute すると、567 (integer) と "Zool" (varchar) の値で実行される
   $sth->execute();
 
 =head3 B<bind_param_inout>
 
   $rv = $sth->bind_param_inout($param_num, \$scalar, 0);
+
+=begin original
 
 Experimental support for this feature is provided. The first argument to
 bind_param_inout should be a placeholder number. The second argument
@@ -3763,6 +3764,14 @@ is not used and should simply be set to 0. Note that what this really does is
 assign a returned column to the variable, in the order in which the column
 appears. For example:
 
+=end original
+
+この機能は、実験的サポートとして提供されます。bind_param_inout
+への最初の引数は、プレースホルダの番号でなければなりません。2つ目の引数は、
+スカラ変数へのリファレンスでなければなりません。3つ目には、単に 0 を指定してください。
+これが実際にやっていることは、戻ってきたカラムの値を、カラムが現れる順に、
+変数に代入することだという点に注意してください。例:
+
   my $foo = 123;
   $sth = $dbh->prepare("SELECT 1+?::int");
   $sth->bind_param_inout(1, \$foo, 0);
@@ -3770,35 +3779,71 @@ appears. For example:
   $sth->execute(444);
   $sth->fetch;
 
+=begin original
+
 The above will cause $foo to have a new value of "223" after the final fetch.
 Note that the variables bound in this manner are very sticky, and will trump any
 values passed in to execute. This is because the binding is done as late as possible,
 at the execute() stage, allowing the value to be changed between the time it was bound
 and the time the query is executed. Thus, the above execute is the same as:
 
+=end original
+
+この例の最後の fetch のあとでは、$foo は新しい値 "223" を持つことになります。
+この値を渡す方法はかなりのクセ者で、execute に渡すどんな値でも trump することに注意してください。
+これは、値の結びつけができる限り遅く、execute() の段階で行われるので、
+bind を実行してからクエリを execute するまでの間に、値を変更することを許します。
+ですから、上の例の execute は、これと同じです:
+
+=for memo XXX trump any values.
+
   $sth->execute();
 
 =head3 B<bind_param_array>
-
 
   $rv = $sth->bind_param_array($param_num, $array_ref_or_value)
   $rv = $sth->bind_param_array($param_num, $array_ref_or_value, $bind_type)
   $rv = $sth->bind_param_array($param_num, $array_ref_or_value, \%attr)
 
+=begin original
+
 Binds an array of values to a placeholder, so that each is used in turn by a call
 to the L</execute_array> method.
+
+=end original
+
+プレースホルダに、配列の値を結び付けます。それぞれの値は L</execute_array>
+メソッドの呼び出しで順に使われます。
 
 =head3 B<execute>
 
   $rv = $sth->execute(@bind_values);
 
+=begin original
+
 Executes a previously prepared statement. In addition to C<UPDATE>, C<DELETE>,
 C<INSERT> statements, for which it returns always the number of affected rows,
 the C<execute> method can also be used for C<SELECT ... INTO table> statements.
 
+=end original
+
+以前に準備しておいたプリペアド文を実行します。常に影響のあった行数を返す
+C<UPDATE> 文, C<DELETE> 文, C<INSERT> 文に加え、C<SELECT ... INTO table>
+文にも C<execute> メソッドを使用することができます。
+
+=begin original
+
 The "prepare/bind/execute" process has changed significantly for PostgreSQL
 servers 7.4 and later: please see the C<prepare()> and C<bind_param()> entries for
 much more information.
+
+=end original
+
+"prepare/bind/execute" (準備/値の結びつけ/実行) のプロセスは、PostgreSQL 7.4
+以降のサーバで大きく変更されました。より多くの情報がありますので、
+C<prepare()> や C<bind_param()> のエントリもご覧ください。
+
+=begin original
 
 Setting one of the bind_values to "undef" is the equivalent of setting the value
 to NULL in the database. Setting the bind_value to $DBDPG_DEFAULT is equivalent
@@ -3806,12 +3851,34 @@ to sending the literal string 'DEFAULT' to the backend. Note that using this
 option will force server-side prepares off until such time as PostgreSQL
 supports using DEFAULT in prepared statements.
 
+=end original
+
+"undef" 値を結びつけることは、データベースに対して NULL を設定することと同義です。
+$DBDPG_DEFAULT の値を結びつけることは、リテラルの文字列 'DEFAULT'
+をバックエンドに対して送ることと同義です。プリペアド文で DEFAULT
+の使用をサポートするまえの PostgreSQL に対してこのオプションを使うと、
+サーバサイドのプリペアド文を無効にすることに注意が必要です。
+
+=begin original
+
 DBD::Pg also supports passing in arrays to execute: simply pass in an arrayref,
 and DBD::Pg will flatten it into a string suitable for input on the backend.
+
+=end original
+
+DBD::Pg は、配列を渡すこともサポートしています。単純に配列のリファレンスを渡すと、
+DBD::Pg はその配列を、バックエンドへの入力として使用できる形式に、平坦化します。
+
+=begin original
 
 If you are using Postgres version 8.2 or greater, you can also use any of the
 fetch methods to retrieve the values of a C<RETURNING> clause after you execute
 an C<UPDATE>, C<DELETE>, or C<INSERT>. For example:
+
+=end original
+
+もし、Postgres のバージョン 8.2 以降を使用しているのなら、C<UPDATE>, C<DELETE>, C<INSERT>
+文の C<RETURNING> 句が返す値を取り出すために fetch メソッドを使うこともできます。例:
 
   $dbh->do(q{CREATE TABLE abc (id SERIAL, country TEXT)});
   $SQL = q{INSERT INTO abc (country) VALUES (?) RETURNING id};
@@ -3830,9 +3897,16 @@ an C<UPDATE>, C<DELETE>, or C<INSERT>. For example:
   ($tuples, $rows) = $sth->execute_array(\%attr) or die $sth->errstr;
   ($tuples, $rows) = $sth->execute_array(\%attr, @bind_values) or die $sth->errstr;
 
+=begin original
+
 Execute a prepared statement once for each item in a passed-in hashref, or items that
 were previously bound via the L</bind_param_array> method. See the DBI documentation
 for more details.
+
+=end original
+
+指定したハッシュのリファレンスか、L</bind_param_array> メソッドで前に与えておいた要素それぞれに
+対して、プリペアド文を実行します。詳細は DBI のドキュメントを見てください。
 
 =head3 B<execute_for_fetch>
 
@@ -3842,15 +3916,28 @@ for more details.
   ($tuples, $rows) = $sth->execute_for_fetch($fetch_tuple_sub);
   ($tuples, $rows) = $sth->execute_for_fetch($fetch_tuple_sub, \@tuple_status);
 
+=begin original
+
 Used internally by the L</execute_array> method, and rarely used directly. See the
 DBI documentation for more details.
+
+=end original
+
+L</execute_array> メソッドの内部で使用されるものです。直接使うことはまれでしょう。
+詳細は DBI のドキュメントを見てください。
 
 =head3 B<fetchrow_arrayref>
 
   $ary_ref = $sth->fetchrow_arrayref;
 
+=begin original
+
 Fetches the next row of data from the statement handle, and returns a reference to an array
 holding the column values. Any columns that are NULL are returned as undef within the array.
+
+=end original
+
+=for XXX
 
 If there are no more rows or if an error occurs, the this method return undef.
 You should check C<< $sth->err >> afterwards (or use the L</RaiseError> attribute)
