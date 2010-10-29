@@ -3937,15 +3937,34 @@ holding the column values. Any columns that are NULL are returned as undef withi
 
 =end original
 
-=for XXX
+ステートメントハンドルから、次の行のデータを取り出します。
+カラムの値を持った配列へのリファレンスを返します。
+NULL 値のカラムは、配列では undef として返されます。
+
+=begin original
 
 If there are no more rows or if an error occurs, the this method return undef.
 You should check C<< $sth->err >> afterwards (or use the L</RaiseError> attribute)
 to discover if the undef returned was due to an error.
 
+=end original
+
+もうこれ以上行が無い時や、エラーの時は、このメソッドは undef を返します。
+返された undef がエラーによるものなのかを調べるために、このメソッドの後で C<< $sth->err >>
+を調べる(か、L</RaiseError> 属性を使う)べきです。
+
+=begin original
+
 Note that the same array reference is returned for each fetch, so don't store the reference and
 then use it after a later fetch. Also, the elements of the array are also reused for each row,
 so take care if you want to take a reference to an element. See also L</bind_columns>.
+
+=end original
+
+取り出しのたびに同一のリファレンスが返されますので、引き続く取り出しのあとで使うために、
+このリファレンスをどこかに保存することはしないでください。
+また、配列の要素も行の取り出しのたびに再利用されますので、要素へのリファレンスを取りたい、
+という場合には注意してください。L</bind_columns> も見てください。
 
 =head3 B<fetchrow_array>
 
