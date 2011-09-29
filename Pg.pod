@@ -3077,6 +3077,8 @@ Because this is not portable, it is not recommended that you use this method in 
   $ary_ref = $dbh->selectrow_arrayref($statement, \%attr);
   $ary_ref = $dbh->selectrow_arrayref($statement, \%attr, @bind_values);
 
+=for memo XXX なぜこの例だけ、$sql じゃなくて $statement ?
+
 =begin original
 
 Exactly the same as L</selectrow_array>, except that it returns a reference to an array,
